@@ -1,0 +1,107 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-background {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  position: relative;
+}
+ 
+/* Capa de color superpuesta a la imagen de fondo, distinta por sistema */
+.login-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+ 
+.login-background--formal::before {
+  background: linear-gradient(135deg, rgba(22, 39, 73, 0.55), rgba(22, 39, 73, 0.15));
+}
+ 
+.login-background--formativa::before {
+  background: linear-gradient(135deg, rgba(15, 98, 76, 0.55), rgba(15, 98, 76, 0.15));
+}
+ 
+/* La tarjeta debe quedar por encima de la capa de color */
+.login-card {
+  position: relative;
+  z-index: 1;
+  border-top: 6px solid transparent;
+}
+ 
+.login-card--formal {
+  border-top-color: #162749;
+}
+ 
+.login-card--formativa {
+  border-top-color: #0f624c;
+}
+ 
+.login-subtitulo {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+ 
+.login-subtitulo--formal {
+  color: #162749;
+}
+ 
+.login-subtitulo--formativa {
+  color: #0f624c;
+}
+ 
+.login-boton--formal.p-button {
+  background-color: #162749;
+  border-color: #162749;
+}
+ 
+.login-boton--formativa.p-button {
+  background-color: #0f624c;
+  border-color: #0f624c;
+}
