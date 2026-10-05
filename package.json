@@ -2,6 +2,7 @@
   "name": "react_rosillo",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
     "@testing-library/dom": "^10.4.1",
