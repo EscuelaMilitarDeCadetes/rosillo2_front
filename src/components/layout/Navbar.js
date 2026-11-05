@@ -29,6 +29,12 @@ const Navbar = () => {
   const esFormal = isAuthenticated && sistemaActivo === 'formal';
   const esFormativa = isAuthenticated && sistemaActivo === 'formativa';
 
+  // Roles que el backend deja consultar Investigación Formativa
+  // (ROLES_LECTURA_INVESTIGACION_FORMATIVA) y roles que la gestionan
+  // (ROLES_ESCRITURA_GESTION) — apps/investigacion_formativa/permissions.py
+  const ROLES_LECTURA_FORMATIVA = ['ESTUDIANTE', 'TUTOR', 'JURADO', 'FACULTAD', 'DECANO', 'SOPORTE'];
+  const ROLES_GESTION_FORMATIVA = ['FACULTAD', 'DECANO', 'SOPORTE'];
+
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate(`/login/${sistemaActivo || 'formal'}`);
@@ -85,7 +91,7 @@ const Navbar = () => {
               <Link className="nav-item nav-link active" to={inicioHref}>Inicio</Link>
               {isAuthenticated ? (
                 <>
-                  {hasAnyRole(['SOPORTE']) && (
+                  {esFormal && hasAnyRole(['SOPORTE']) && (
                     <Link className="nav-item nav-link" to="/usuarios">Usuarios</Link>
                   )}
                   {hasAnyRole(['SOPORTE']) && (
@@ -97,17 +103,22 @@ const Navbar = () => {
                         <li><Link className="dropdown-item" to="/catalogos/roles-plataforma">Roles de Plataforma</Link></li>
                         <li><Link className="dropdown-item" to="/catalogos/grados">Grados de Estudio</Link></li>
                         <li><Link className="dropdown-item" to="/catalogos/facultades">Facultades / Escuelas</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/grupos">Grupos de Investigación</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/facultad-x-grupo">Facultades por Grupo</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/rol-x-grupo">Roles de Grupo</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/rol-x-investigador">Roles de Investigador</Link></li>
                         <li><Link className="dropdown-item" to="/catalogos/tipo-documento">Tipos de Documento</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/tipo-calificacion">Tipos de Calificación</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/producto-minciencias">Productos Minciencias</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/grupo-minciencias">Grupos Minciencias</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/tipo-producto">Tipos de Producto</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/producto-x-grupo">Productos por Grupo</Link></li>
-                        <li><Link className="dropdown-item" to="/catalogos/tipo-rubro">Tipos de Rubro</Link></li>
+                        {esFormal && (
+                          <>
+                            <li><hr className="dropdown-divider" /></li>
+                            <li><Link className="dropdown-item" to="/catalogos/grupos">Grupos de Investigación</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/facultad-x-grupo">Facultades por Grupo</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/rol-x-grupo">Roles de Grupo</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/rol-x-investigador">Roles de Investigador</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/tipo-calificacion">Tipos de Calificación</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/producto-minciencias">Productos Minciencias</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/grupo-minciencias">Grupos Minciencias</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/tipo-producto">Tipos de Producto</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/producto-x-grupo">Productos por Grupo</Link></li>
+                            <li><Link className="dropdown-item" to="/catalogos/tipo-rubro">Tipos de Rubro</Link></li>
+                          </>
+                        )}
                       </ul>
                     </li>
                   )}                  
@@ -235,7 +246,7 @@ const Navbar = () => {
                       )}
                     </>
                   )}                
-                  {esFormativa && (
+                  {esFormativa && hasAnyRole(ROLES_LECTURA_FORMATIVA) && (
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Investigación Formativa
@@ -258,31 +269,31 @@ const Navbar = () => {
                           <li><Link className="dropdown-item" to="/integracion/vinculacion-facultad">Crear Usuario (Estudiante/Jurado/Tutor)</Link></li>
                         )}
                         {hasAnyRole(['FACULTAD']) && (
-                          <Link className="nav-item nav-link" to="/usuarios/admin">Administración de Usuarios</Link>
+                          <li><Link className="dropdown-item" to="/usuarios/admin">Administración de Usuarios</Link></li>
                         )}
                         {hasAnyRole(['FACULTAD']) && (
-                          <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Estadísticas
-                            </a>
-                            <ul className="dropdown-menu">
-                              <li><Link className="dropdown-item" to="/estadisticasFormativa">Estadísticas</Link></li>
-                            </ul>
-                          </li>
+                          <li><Link className="dropdown-item" to="/estadisticasFormativa">Estadísticas</Link></li>
                         )}
 
-                        <li><hr className="dropdown-divider" /></li>
-                        <li><h6 className="dropdown-header">Modalidades</h6></li>
-                        <li><Link className="dropdown-item" to="/formativa/modalidades">Modalidades</Link></li>
-                        <li><Link className="dropdown-item" to="/formativa/modalidades-facultad">Modalidades por Facultad</Link></li>
-                        <li><Link className="dropdown-item" to="/formativa/requisitos-modalidad">Requisitos de Modalidad</Link></li>
+                        {/* Configuración: sólo para quienes la gestionan */}
+                        {hasAnyRole(ROLES_GESTION_FORMATIVA) && (
+                          <>
+                            <li><hr className="dropdown-divider" /></li>
+                            <li><h6 className="dropdown-header">Modalidades</h6></li>
+                            <li><Link className="dropdown-item" to="/formativa/modalidades">Modalidades</Link></li>
+                            <li><Link className="dropdown-item" to="/formativa/modalidades-facultad">Modalidades por Facultad</Link></li>
+                            <li><Link className="dropdown-item" to="/formativa/requisitos-modalidad">Requisitos de Modalidad</Link></li>
 
+                            <li><hr className="dropdown-divider" /></li>
+                            <li><h6 className="dropdown-header">Flujo de Proceso</h6></li>
+                            <li><Link className="dropdown-item" to="/formativa/flujos">Flujos de Proceso</Link></li>
+                            <li><Link className="dropdown-item" to="/formativa/etapas-flujo">Etapas de Flujo</Link></li>
+                            <li><Link className="dropdown-item" to="/formativa/transiciones-flujo">Transiciones de Flujo</Link></li>
+                            <li><Link className="dropdown-item" to="/formativa/reglas-flujo">Reglas de Flujo</Link></li>
+                          </>
+                        )}
                         <li><hr className="dropdown-divider" /></li>
-                        <li><h6 className="dropdown-header">Flujo de Proceso</h6></li>
-                        <li><Link className="dropdown-item" to="/formativa/flujos">Flujos de Proceso</Link></li>
-                        <li><Link className="dropdown-item" to="/formativa/etapas-flujo">Etapas de Flujo</Link></li>
-                        <li><Link className="dropdown-item" to="/formativa/transiciones-flujo">Transiciones de Flujo</Link></li>
-                        <li><Link className="dropdown-item" to="/formativa/reglas-flujo">Reglas de Flujo</Link></li>
+                        <li><h6 className="dropdown-header">Etapas</h6></li>
                         <li><Link className="dropdown-item" to="/formativa/instancias-etapa">Instancias de Etapa</Link></li>
 
                         <li><hr className="dropdown-divider" /></li>
@@ -308,7 +319,11 @@ const Navbar = () => {
                     </li>
                   )}
 
-                  {hasAnyRole(['DECANO', 'SUPERVISOR', 'GERENTE']) && (
+                  {esFormativa && hasAnyRole(['FACULTAD', 'SOPORTE']) && (
+                    <li className="nav-item"><Link className="nav-link" to="/plantillas-documento">Plantillas de Documento</Link></li>
+                  )}
+
+                  {esFormal && hasAnyRole(['DECANO', 'SUPERVISOR', 'GERENTE']) && (
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Documentos
@@ -319,14 +334,15 @@ const Navbar = () => {
                       </ul>
                     </li>
                   )}
-                  {hasAnyRole(['DECANO', 'SUPERVISOR', 'FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO']) && (
+                  {((esFormal && hasAnyRole(['DECANO', 'SUPERVISOR', 'FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO'])) ||
+                    (esFormativa && hasAnyRole(['DECANO', 'FACULTAD']))) && (
                     <li className="nav-item"><Link className="nav-link" to="/aprobaciones">Aprobaciones</Link></li>
                   )}
 
-                  {hasAnyRole(['FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO']) && (
+                  {esFormal && hasAnyRole(['FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO']) && (
                     <li className="nav-item"><Link className="nav-link" to="/tareas">Tareas</Link></li>
                   )}
-                  {user?.is_staff && (
+                  {esFormal && user?.is_staff && (
                     <li><Link className="dropdown-item" to="/notificaciones/recordatorios">Recordatorios Masivos</Link></li>
                   )}
                 </>

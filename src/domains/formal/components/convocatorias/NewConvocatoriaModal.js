@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { FileUpload } from 'primereact/fileupload';
-import { Toast } from 'primereact/toast';
+import Toast from '../../../../components/common/Toast';
 import { createConvocatoria } from '../../../../features/convocatorias/convocatoriasSlice';
 import ConfirmationModal from '../../../../components/common/ConfirmationModal';
 

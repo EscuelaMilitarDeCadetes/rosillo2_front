@@ -6,7 +6,7 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
-import { Toast } from 'primereact/toast';
+import Toast from '../../../../components/common/Toast';
 import ConfirmationModal from '../../../../components/common/ConfirmationModal';
 import { SelectButton } from 'primereact/selectbutton';
 import {

@@ -8,7 +8,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Checkbox } from "primereact/checkbox";
 import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
+import Toast from "../../../components/common/Toast";
 import axiosInstance from "../../../api/axiosInstance";
 import { crearProyectoExterno } from "../../../features/proyectos/proyectosSlice";
 import {

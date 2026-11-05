@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
+import Toast from '../../../../components/common/Toast';
 import {
   fetchOpenConvocatorias,
   descargarDocumentoConvocatoria,

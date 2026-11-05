@@ -7,7 +7,9 @@ import {
   Navigate,
   useLocation
 } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { Toast } from "primereact/toast";
+import { registrarToastGlobal } from "./utils/notificador";
 import { useDispatch } from "react-redux";
 import { loadSession } from "./features/auth/authSlice";
 import Navbar from "./components/layout/Navbar";
@@ -139,8 +141,16 @@ function AppContent() {
   const location = useLocation();
   const hideNavbar = HIDE_NAVBAR_PATHS.includes(location.pathname);
 
+  // Toast global: lo usa axiosInstance.js para mostrar el resultado de cada
+  // creación, edición o eliminación en cualquier pantalla.
+  const toastGlobal = useRef(null);
+  useEffect(() => {
+    registrarToastGlobal(toastGlobal);
+  }, []);
+
   return (
     <div className="d-flex flex-column min-vh-100">
+      <Toast ref={toastGlobal} position="top-right" />
       {!hideNavbar && <Navbar />}
       <main className="flex-grow-1">
         <Routes>
@@ -157,12 +167,16 @@ function AppContent() {
             <Route path="/forbidden" element={<ForbiddenPage />} />
             <Route path="/server" element={<ServerErrorPage />} />
             {/* Rutas protegidas: cualquier autenticado, sin rol específico */}
-            <Route element={<PrivateRoute requiredAmbito="formal" />}>
-              {/* Rutas comunes. */}
-              <Route path="/formal" element={<FormalHomePage />} />              
+            {/* Rutas comunes a los dos módulos (formal y formativa): sólo
+                exigen estar autenticado. El backend (MiPerfilView, me,
+                change-password) tampoco exige ámbito. */}
+            <Route element={<PrivateRoute />}>
               <Route path="/perfil" element={<ProfilePage />} />
               <Route path="/cambiar-password" element={<ChangePasswordPage />} />
               <Route path="/ayuda" element={<HelpPage />} />
+            </Route>
+            <Route element={<PrivateRoute requiredAmbito="formal" />}>
+              <Route path="/formal" element={<FormalHomePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/institucional/reportes" element={<ReportesInstitucionalesPage />} />
               <Route path="/crm/interacciones" element={<InteraccionesPage />} />
@@ -172,8 +186,14 @@ function AppContent() {
               <Route path="/calificar" element={<CalificarProyectosPage />} />              
               <Route path="/calificar/:id" element={<CalificarProyectoSeleccionadoPage />} />
               <Route path="/documentos/por-tipo" element={<DocumentosPorTipoPage />} />
+            </Route>
+            {/* Cualquier firmante (el backend sólo exige estar autenticado) y
+                recordatorios masivos (el backend exige is_staff). Antes estaban
+                restringidas a CINTERNO, así que DECANO/SUPERVISOR/GERENTE veían
+                el enlace "Mis Firmas Pendientes" pero recibían 403. */}
+            <Route element={<PrivateRoute requiredAmbito="formal" />}>
               <Route path="/firmas/pendientes" element={<MisFirmasPendientesPage />} />
-              <Route path="/notificaciones/recordatorios" element={<RecordatoriosPage />} />              
+              <Route path="/notificaciones/recordatorios" element={<RecordatoriosPage />} />
             </Route>
             <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["FACULTAD"]} />}>
               <Route path="/participaciones/proyectos-facultad" element={<CalificarProyectosXFacultadPage />} />
@@ -187,15 +207,19 @@ function AppContent() {
             <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["CEXTERNO"]} />}>
               <Route path="/proyectos/crear" element={<CrearProyectoExternoPage />} />
             </Route>
-            <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["SOPORTE"]} />}>
+            {/* Catálogos compartidos por los dos módulos. */}
+            <Route element={<PrivateRoute allowedRoles={["SOPORTE"]} />}>
               <Route path="/catalogos/roles-plataforma" element={<RolPlataformaPage />} />
               <Route path="/catalogos/grados" element={<GradoEstudiosPage />} />
               <Route path="/catalogos/facultades" element={<FacultadEscuelaPage />} />
+              <Route path="/catalogos/tipo-documento" element={<TipoDocumentoPage />} />
+            </Route>
+            {/* Catálogos y administración propios de Investigación Formal. */}
+            <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["SOPORTE"]} />}>
               <Route path="/catalogos/grupos" element={<GrupoInvestigacionPage />} />
               <Route path="/catalogos/facultad-x-grupo" element={<FacultadXGrupoPage />} />
               <Route path="/catalogos/rol-x-grupo" element={<RolGrupoPage />} />
               <Route path="/catalogos/rol-x-investigador" element={<RolInvestigadorPage />} />
-              <Route path="/catalogos/tipo-documento" element={<TipoDocumentoPage />} />
               <Route path="/catalogos/tipo-calificacion" element={<TipoCalificacionPage />} />
               <Route path="/catalogos/producto-minciencias" element={<ProductoMincienciasPage />} />
               <Route path="/catalogos/grupo-minciencias" element={<GrupoMincienciasPage />} />
@@ -225,8 +249,13 @@ function AppContent() {
             <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={['SOPORTE', 'CINTERNO', 'CEXTERNO', 'FACULTAD']} />}>
               <Route path="/crm/entidades-externas" element={<EntidadesExternasPage />} />
             </Route>            
-            <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["DECANO", "SUPERVISOR", "FACULTAD", "GRUPO", "CINTERNO", "CEXTERNO"]} />}>
+            {/* Aprobaciones: también en formativa (postulaciones, participantes,
+                evaluaciones, sustentaciones y segundas instancias generan
+                aprobaciones para el Decano). El backend no exige ámbito. */}
+            <Route element={<PrivateRoute allowedRoles={["DECANO", "SUPERVISOR", "FACULTAD", "GRUPO", "CINTERNO", "CEXTERNO"]} />}>
               <Route path="/aprobaciones" element={<AprobacionesPage />} />
+            </Route>
+            <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["DECANO", "SUPERVISOR", "FACULTAD", "GRUPO", "CINTERNO", "CEXTERNO"]} />}>
               <Route path="/tareas" element={<TareasPage />} />
             </Route>
             <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={["FACULTAD", "GRUPO", "CINTERNO", "CEXTERNO", "ASESOR", "SUPERVISOR", "DECANO", "GERENTE"]} />}>
@@ -239,6 +268,10 @@ function AppContent() {
             <Route element={<PrivateRoute requiredAmbito="formal" allowedRoles={['SOPORTE', 'SUPERVISOR', 'ASESOR', 'FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO', 'DECANO']} />}>
               <Route path="/institucional/personas" element={<PersonasPage />} />
               <Route path="/institucional/persona-grupo" element={<PersonaXGrupoPage />} />
+            </Route>
+            {/* Administración de usuarios: FACULTAD también la usa desde
+                formativa (usuarios que creó). El backend no exige ámbito. */}
+            <Route element={<PrivateRoute allowedRoles={['SOPORTE', 'SUPERVISOR', 'ASESOR', 'FACULTAD', 'GRUPO', 'CINTERNO', 'CEXTERNO', 'DECANO']} />}>
               <Route path="/usuarios/admin" element={<UsuarioAdminPage />} />
             </Route>
             
@@ -248,6 +281,12 @@ function AppContent() {
                 entrado por login/formativa/ (sistemaActivo === 'formativa') */}
             <Route element={<PrivateRoute requiredAmbito="formativa" />}>
               <Route path="/formativa" element={<FormativaHomePage />} />
+            </Route>
+            {/* Mismos roles que ROLES_LECTURA_INVESTIGACION_FORMATIVA del
+                backend (apps/investigacion_formativa/permissions.py). GERENTE
+                y SUPERVISOR pueden iniciar sesión en formativa pero el backend
+                no les permite consultar estos módulos. */}
+            <Route element={<PrivateRoute requiredAmbito="formativa" allowedRoles={["ESTUDIANTE", "TUTOR", "JURADO", "FACULTAD", "DECANO", "SOPORTE"]} />}>
               <Route path="/formativa/procesos" element={<ProcesosFormativosPage />} />
               <Route path="/formativa/postulaciones" element={<PostulacionesProcesoPage />} />
               <Route path="/formativa/planes-trabajo" element={<PlanesTrabajoPage />} />

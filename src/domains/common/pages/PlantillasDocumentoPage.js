@@ -8,8 +8,13 @@ import PlantillasDocumentoTable from '../components/plantillaDocumento/Plantilla
 // accesible a cualquier autenticado, pero los controles de edición solo se
 // habilitan para SOPORTE.
 const PlantillasDocumentoPage = () => {
-  const { roles } = useSelector((state) => state.auth);
-  const puedeEditar = roles?.includes('SOPORTE') || roles?.includes('CINTERNO');
+  const { roles, sistemaActivo } = useSelector((state) => state.auth);
+  // Igual que PlantillaDocumentoViewSet: SOPORTE y CINTERNO siempre;
+  // FACULTAD sólo cuando inició sesión por Investigación Formativa.
+  const puedeEditar =
+    roles?.includes('SOPORTE') ||
+    roles?.includes('CINTERNO') ||
+    (roles?.includes('FACULTAD') && sistemaActivo === 'formativa');
 
   return (
     <div className="container-fluid mt-4">

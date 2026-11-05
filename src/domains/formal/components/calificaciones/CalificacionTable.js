@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { TabView, TabPanel } from 'primereact/tabview';
-import { Toast } from 'primereact/toast';
+import Toast from '../../../../components/common/Toast';
 import { descargarDocumentoParticipacion } from '../../../../features/calificaciones/calificacionSlice';
 import useCalificacionData from './calificacionTable/useCalificacionData';
 import CalificacionFiltros from './calificacionTable/CalificacionFiltros';

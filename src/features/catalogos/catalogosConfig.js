@@ -130,7 +130,12 @@ export const CATALOGOS_CONFIG = {
     campos: [
       { name: 'nombre_documento', label: 'Nombre del Documento', type: 'text', required: true, maxLength: 40 },
       { name: 'grupo', label: 'Grupo (ej: convocatoria, proyecto, evaluacion)', type: 'text', required: true, maxLength: 30 },
+      { name: 'es_obligatorio', label: 'Obligatorio', type: 'checkbox' },
     ],
+    // El backend filtra y crea los tipos de documento según el módulo con
+    // el que se inició sesión (claim 'ambito' del JWT).
+    avisoPermiso:
+      'Los tipos de documento se listan y se crean para el módulo con el que iniciaste sesión: si entraste por Investigación Formal quedan en Formal; si entraste por Investigación Formativa quedan en Formativa.',
     // apps/common/urls.py -> tipos-documento/por-grupo/?grupo=<valor>
     filtro: {
       campo: 'grupo',

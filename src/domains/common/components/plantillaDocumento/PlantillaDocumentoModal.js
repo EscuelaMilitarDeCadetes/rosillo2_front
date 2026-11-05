@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Message } from 'primereact/message';
-import { fetchMetadata } from '../../../../features/metadata/metadataSlice';
+import { fetchTiposDocumento } from '../../../../features/metadata/metadataSlice';
 import {
   crearPlantilla,
   actualizarPlantilla,
@@ -27,9 +27,12 @@ const PlantillaDocumentoModal = ({ visible, onHide, plantilla }) => {
   const [rutaDocumento, setRutaDocumento] = useState('');
   const [validationError, setValidationError] = useState('');
 
+  // Se recargan SIEMPRE al abrir: el backend devuelve sólo los tipos de
+  // documento del módulo con el que se inició sesión (formal/formativa), y
+  // la lista guardada en Redux puede venir de una sesión anterior del otro módulo.
   useEffect(() => {
-    if (visible && !tiposDocumento?.length) dispatch(fetchMetadata());
-  }, [visible, dispatch, tiposDocumento]);
+    if (visible) dispatch(fetchTiposDocumento());
+  }, [visible, dispatch]);
 
   useEffect(() => {
     if (visible) {

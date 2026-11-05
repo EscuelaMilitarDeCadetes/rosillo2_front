@@ -8,7 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { Tooltip } from 'primereact/tooltip';
-import { Toast } from 'primereact/toast';
+import Toast from '../../../../components/common/Toast';
 import {
   fetchAllConvocatorias,
   descargarDocumentoConvocatoria,

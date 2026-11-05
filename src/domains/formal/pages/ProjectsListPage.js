@@ -10,7 +10,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
-import { Toast } from "primereact/toast";
+import Toast from "../../../components/common/Toast";
 import {
   fetchMisProyectos,
   fetchProyectosPorFacultad,
