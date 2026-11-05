@@ -42,7 +42,7 @@ export const marcarTodasLeidas = createAsyncThunk(
 );
 
 // Disparo manual y masivo de recordatorios de tareas (además de la corrida
-// automática vía Celery beat que ya existe en el backend). Solo accesible a
+// automática diaria que hace el programador interno del backend). Solo accesible a
 // usuarios is_staff (permiso IsAdminUser en el backend), por eso el thunk se
 // mantiene separado del resto del flujo de autoservicio de notificaciones.
 export const enviarRecordatoriosTareas = createAsyncThunk(
@@ -76,6 +76,9 @@ const notificacionesSlice = createSlice({
   },
   reducers: {
     notificacionRecibida: (state, action) => {
+      // Evita duplicados si la misma notificación ya llegó por la consulta
+      // periódica de respaldo (ver useNotificacionesWebSocket).
+      if (state.items.some((n) => n.id === action.payload.id)) return;
       state.items.unshift(action.payload);
       state.noLeidas += 1;
     },
