@@ -8,7 +8,7 @@ import { enviarRecordatoriosTareas, limpiarResultadoRecordatorios } from '../../
 
 // Disparo manual del envío masivo de recordatorios de tareas
 // (notificacion/enviar-recordatorios/). El backend ya corre esto
-// automáticamente cada día vía Celery beat (enviar_recordatorios_tareas_task);
+// automáticamente cada día desde su programador interno de tareas;
 // este panel es para forzar una corrida puntual (ej: tras cambiar fechas
 // límite en bloque) sin esperar al próximo ciclo programado.
 // Solo visible/funcional para usuarios is_staff (permiso IsAdminUser).

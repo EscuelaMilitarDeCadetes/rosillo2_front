@@ -12,6 +12,9 @@ import "primereact/resources/themes/lara-light-indigo/theme.css"; // Elige tu te
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
+// Recolorea PrimeReact en verde cuando <body> tiene la clase tema-formativa.
+// Debe ir DESPUÉS del tema de PrimeReact.
+import "./styles/tema-formativa.css";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

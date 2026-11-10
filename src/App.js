@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef } from "react";
 import { Toast } from "primereact/toast";
 import { registrarToastGlobal } from "./utils/notificador";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loadSession } from "./features/auth/authSlice";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -139,11 +139,21 @@ const HIDE_NAVBAR_PATHS = ["/", "/login/formal", "/login/formativa"];
 
 function AppContent() {
   const location = useLocation();
+  // En el LandingPage y los login no se muestran ni encabezado ni pie de página.
   const hideNavbar = HIDE_NAVBAR_PATHS.includes(location.pathname);
 
   // Toast global: lo usa axiosInstance.js para mostrar el resultado de cada
   // creación, edición o eliminación en cualquier pantalla.
   const toastGlobal = useRef(null);
+
+  // Color base por módulo: verde en Investigación Formativa, azul en Formal.
+  // La clase va en <body> para que también la reciban los diálogos y menús
+  // de PrimeReact, que se montan fuera de este árbol.
+  const { isAuthenticated, sistemaActivo } = useSelector((state) => state.auth);
+  const esTemaFormativa = isAuthenticated && sistemaActivo === "formativa";
+  useEffect(() => {
+    document.body.classList.toggle("tema-formativa", esTemaFormativa);
+  }, [esTemaFormativa]);
   useEffect(() => {
     registrarToastGlobal(toastGlobal);
   }, []);
@@ -333,7 +343,7 @@ function AppContent() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
       </main>
-      <Footer />
+      {!hideNavbar && <Footer />}
     </div>
   );
 }

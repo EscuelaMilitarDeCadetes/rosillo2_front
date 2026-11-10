@@ -1,0 +1,48 @@
+/* src/components/layout/Footer.css */
+.rosillo-footer {
+  background-color: var(--rosillo-primario);
+  color: #fff;
+  margin-top: 120px;
+}
+
+.rosillo-footer .footer-titulo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.rosillo-footer .footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rosillo-footer .footer-links li {
+  margin-bottom: 0.6rem;
+}
+
+.rosillo-footer .footer-links li,
+.rosillo-footer .footer-muted {
+  color: #6c757d;
+}
+
+/* Línea separadora con "ROSILLO" en el centro */
+.rosillo-footer .footer-separador {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.rosillo-footer .footer-separador::before,
+.rosillo-footer .footer-separador::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #fff;
+}
+
+.rosillo-footer .footer-legal {
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+}

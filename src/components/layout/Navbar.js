@@ -80,7 +80,7 @@ const Navbar = () => {
           </div>
         </div>
       </main>
-      <nav className="navbar navbar-expand-lg navbar-dark text-center" style={{ backgroundColor: '#162749' }}>
+      <nav className="navbar navbar-expand-lg navbar-dark text-center" style={{ backgroundColor: 'var(--rosillo-primario)' }}>
         <div className="container-fluid">
           <Link className="navbar-brand border-bottom text-center" style={{ marginLeft: '8px' }} to={inicioHref}>JOSÉ MARIA ROSILLO</Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">

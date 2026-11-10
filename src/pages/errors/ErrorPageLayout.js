@@ -15,7 +15,7 @@ const ErrorPageLayout = ({ code, icon, title, message, children }) => {
 
   return (
     <div className="container d-flex flex-column align-items-center justify-content-center text-center py-5" style={{ minHeight: '60vh' }}>
-      <i className={`pi ${icon}`} style={{ fontSize: '4rem', color: '#162749' }}></i>
+      <i className={`pi ${icon}`} style={{ fontSize: '4rem', color: 'var(--rosillo-primario)' }}></i>
       <h1 className="fw-bold mt-4" style={{ fontSize: '3rem' }}>{code}</h1>
       <h2 className="mb-3">{title}</h2>
       <p className="text-muted mb-4" style={{ maxWidth: '32rem' }}>{message}</p>
