@@ -71,6 +71,27 @@ export const actualizarBanderasControlCambio = createAsyncThunk(
   }
 );
 
+// Textos del formato (descripción, nueva fecha de finalización, propuesta
+// original/nueva, detalle de personal y costos).
+export const actualizarDetalleControlCambio = createAsyncThunk(
+  'controlCambios/actualizarDetalle',
+  async ({ controlCambioId, proyectoId, detalle }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(`${BASE}${controlCambioId}/detalle/`, detalle);
+      dispatch(fetchControlCambiosPorProyecto(proyectoId));
+      return response.data;
+    } catch (error) {
+      const data = error.response?.data;
+      const mensaje =
+        typeof data === 'string'
+          ? data
+          : (data && Object.values(data).flat().join(' ')) ||
+            'Error al actualizar el detalle del cambio.';
+      return rejectWithValue(mensaje);
+    }
+  }
+);
+
 const controlCambiosSlice = createSlice({
   name: 'controlCambios',
   initialState: {

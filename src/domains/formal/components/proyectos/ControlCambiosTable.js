@@ -10,6 +10,9 @@ import {
   actualizarBanderasControlCambio,
 } from '../../../../features/controlCambios/controlCambiosSlice';
 import AddControlCambioModal from './AddControlCambioModal';
+import DetalleControlCambioModal from './formatos/DetalleControlCambioModal';
+import GenerarBorradorButton from './formatos/GenerarBorradorButton';
+import { fetchTiposGenerables } from '../../../../features/formatos/formatosSlice';
 
 // El backend solo permite crear registros y corregir las 4 banderas
 // (cambio_tiempo / investigador / costo / producto) — no hay update ni
@@ -31,9 +34,14 @@ const ControlCambiosTable = ({ proyectoId, readOnly = false }) => {
   const { roles } = useSelector((state) => state.auth);
   const { registros, loading } = useSelector((state) => state.controlCambios);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [controlDetalle, setControlDetalle] = useState(null);
+  const { tiposGenerables } = useSelector((state) => state.formatos);
+  // Tipo de documento "Control de cambios" con plantilla .docx (si existe).
+  const tipoFormatoControl = (tiposGenerables || []).find((t) => t.requiere_control_cambios);
 
   useEffect(() => {
     if (proyectoId) dispatch(fetchControlCambiosPorProyecto(proyectoId));
+    dispatch(fetchTiposGenerables());
   }, [dispatch, proyectoId]);
 
   const hasAnyRole = (requiredRoles) => (roles || []).some((rol) => requiredRoles.includes(rol));
@@ -65,6 +73,28 @@ const ControlCambiosTable = ({ proyectoId, readOnly = false }) => {
     );
   };
 
+  const puedeEditarDetalle = !readOnly && hasAnyRole(ROLES_PUEDEN_CREAR);
+
+  const accionesBodyTemplate = (rowData) => (
+    <div className="d-flex gap-2">
+      <Button
+        icon={puedeEditarDetalle ? 'pi pi-pencil' : 'pi pi-eye'}
+        className="p-button-rounded p-button-info p-button-sm"
+        tooltip={puedeEditarDetalle ? 'Detalle del formato (descripción, nueva fecha, propuesta...)' : 'Ver detalle'}
+        tooltipOptions={{ position: 'top' }}
+        onClick={() => setControlDetalle(rowData)}
+      />
+      {tipoFormatoControl && (
+        <GenerarBorradorButton
+          proyectoId={proyectoId}
+          tipoDocumentoId={tipoFormatoControl.tipo_documento}
+          controlCambiosId={rowData.id}
+          tooltip="Generar el formato de Control de Cambios (.docx) de este cambio"
+        />
+      )}
+    </div>
+  );
+
   const header = (
     <div className="d-flex justify-content-between align-items-center">
       <h5 className="m-0">Control de Cambios del Proyecto</h5>
@@ -92,7 +122,15 @@ const ControlCambiosTable = ({ proyectoId, readOnly = false }) => {
         <Column field="fecha_cambio" header="Fecha" sortable />
         <Column field="tipo_cambio" header="Tipo de Cambio" sortable />
         <Column header="Afecta a" body={banderasBodyTemplate} />
+        <Column header="Formato" body={accionesBodyTemplate} />
       </DataTable>
+      <DetalleControlCambioModal
+        visible={!!controlDetalle}
+        onHide={() => setControlDetalle(null)}
+        proyectoId={proyectoId}
+        control={controlDetalle}
+        readOnly={!puedeEditarDetalle}
+      />
       {!readOnly && (
         <AddControlCambioModal
           visible={isAddModalVisible}

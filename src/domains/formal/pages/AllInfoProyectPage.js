@@ -17,6 +17,7 @@ import DocumentosProyectoTable from "../components/proyectos/DocumentosProyectoT
 import GastosProyectoTable from "../components/proyectos/GastosProyectoTable";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ControlCambiosTable from "../components/proyectos/ControlCambiosTable";
+import DatosPropuestaPanel from "../components/proyectos/formatos/DatosPropuestaPanel";
 
 
 const AllInfoProyectPage = () => {
@@ -68,6 +69,9 @@ const AllInfoProyectPage = () => {
         <TabView scrollable>
           {" "}
           {/* Añadimos scrollable para muchas pestañas */}
+          <TabPanel header="Datos de la Propuesta">
+            <DatosPropuestaPanel proyectoId={id} tituloProyecto={proyectoActual?.titulo} />
+          </TabPanel>
           <TabPanel header="Investigadores">
             <InvestigadoresProyectoTable proyectoId={id} readOnly={!puedeGestionar || bloqueadoPorActaInicio} />
           </TabPanel>

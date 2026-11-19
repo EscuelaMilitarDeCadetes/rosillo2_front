@@ -27,6 +27,7 @@ const UserParticiparConvocatoriaPage = () => {
     docProyecto: null,
     docCarta: null,
     docAlianza: null,
+    docPropuestaDocx: null,
   });
   const [validationError, setValidationError] = useState('');
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
@@ -175,6 +176,15 @@ const UserParticiparConvocatoriaPage = () => {
             <label htmlFor="docAlianza">Documento de Alianza (Opcional, solo PDF)</label>
             <FileUpload name="docAlianza" customUpload uploadHandler={(e) => handleFileUpload(e, 'docAlianza')} chooseLabel="Seleccionar Archivo" mode="basic" auto accept=".pdf" />
             {formData.docAlianza && <small className="p-text-secondary ms-2">{formData.docAlianza.name}</small>}
+          </div>
+          <div className="field col-12">
+            <label htmlFor="docPropuestaDocx">Propuesta en Word (Opcional, .docx)</label>
+            <FileUpload name="docPropuestaDocx" customUpload uploadHandler={(e) => handleFileUpload(e, 'docPropuestaDocx')} chooseLabel="Seleccionar Archivo" mode="basic" auto accept=".docx" />
+            {formData.docPropuestaDocx && <small className="p-text-secondary ms-2">{formData.docPropuestaDocx.name}</small>}
+            <small className="d-block p-text-secondary">
+              Si adjunta el mismo formato en .docx, el sistema extrae sus datos para llenar automáticamente el
+              Acta de Inicio y los demás formatos. Los revisa en la pestaña "Datos de la Propuesta" del proyecto.
+            </small>
           </div>
         </div>
         {(validationError || error) && (

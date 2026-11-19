@@ -13,6 +13,7 @@ import ConfirmationModal from '../../../../components/common/ConfirmationModal';
 import GestionarFirmantesModal from '../../../common/components/documentoFirma/GestionarFirmantesModal';
 import AsignarTareaModal from '../../../common/components/tarea/AsignarTareaModal';
 import axiosInstance from '../../../../api/axiosInstance';
+import GenerarBorradorMenu from './formatos/GenerarBorradorMenu';
 
 // El catálogo de "documentos requeridos" se obtiene de
 // TipoDocumento filtrado por grupo='proyecto'
@@ -199,6 +200,7 @@ const DocumentosProyectoTable = ({ proyectoId, bloqueadoPorActaInicio }) => {
   return (
     <>
       <div className="d-flex justify-content-end gap-2 mb-3">
+        <GenerarBorradorMenu proyectoId={proyectoId} />
         {canModify && (
           <Button label="Agregar Documento" icon="pi pi-plus" onClick={() => setIsAddDocModalVisible(true)} />
         )}

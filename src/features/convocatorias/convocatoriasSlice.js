@@ -30,6 +30,8 @@ export const createProyecto = createAsyncThunk(
       formData.append('doc_proyecto', data.docProyecto);
       if (data.docCarta) formData.append('doc_carta', data.docCarta);
       if (data.docAlianza) formData.append('doc_alianza', data.docAlianza);
+      // Opcional: .docx editable de la misma propuesta, para importar sus datos.
+      if (data.docPropuestaDocx) formData.append('doc_propuesta_docx', data.docPropuestaDocx);
       const response = await axiosInstance.post(`${BASE}${convocatoriaId}/participar/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });

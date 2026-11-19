@@ -30,6 +30,7 @@ import soporteReducer from '../features/soporte/soporteSlice.js'; // Importa el 
 import estadisticasFormalReducer from '../features/estadisticas/estadisticasFormalSlice'; // Importa el reducer de estadísticas
 import estadisticasFormativaReducer from '../features/estadisticas/estadisticasFormativaSlice'; // Importa el reducer de estadísticas
 import controlCambiosReducer from '../features/controlCambios/controlCambiosSlice'; // Importa el reducer de control cambios
+import formatosReducer from '../features/formatos/formatosSlice'; // Importa el reducer de formatos semiautomáticos
 import productoXGrupoFiltrosReducer from '../features/catalogos/productoXGrupoFiltrosSlice'; // Importa el reducer de productoXGrupo
 import tipoCalificacionFiltrosReducer from '../features/catalogos/tipoCalificacionFiltrosSlice'; // Importa el reducer de tipoCalificacion
 import tipoRubroFiltrosReducer from '../features/catalogos/tipoRubroFiltrosSlice'; // Importa el reducer de tipoRubro
@@ -102,6 +103,7 @@ export const store = configureStore({
     estadisticasFormal: estadisticasFormalReducer, // Añade el reducer de estadísticas de investigacion formal
     estadisticasFormativa: estadisticasFormativaReducer, // Añade el reducer de estadísticas de investigacion formativa
     controlCambios: controlCambiosReducer, // Añade el reducer de control de cambios
+    formatos: formatosReducer, // Añade el reducer de formatos semiautomáticos (propuesta -> actas)
     productoXGrupoFiltros: productoXGrupoFiltrosReducer, // Añade el reducer de productoXGrupo
     tipoCalificacionFiltros: tipoCalificacionFiltrosReducer, // Añade el reducer de tipoCalificacion
     tipoRubroFiltros: tipoRubroFiltrosReducer, // Añade el reducer de tipoRubro

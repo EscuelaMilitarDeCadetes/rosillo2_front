@@ -116,6 +116,7 @@ const ObjetivosProyectoTable = ({ proyectoId, readOnly = false }) => {
           dataKey="id"
         >
           <Column field="objetivo" header="Objetivo Específico" />
+          <Column field="entregable" header="Entregable" />
         </DataTable>
       </Card>
 
