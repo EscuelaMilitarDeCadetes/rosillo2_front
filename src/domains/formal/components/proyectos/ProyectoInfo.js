@@ -8,6 +8,7 @@ import { uploadProjectToGruplac, registrarActaCierre } from '../../../../feature
 import EditProjectDatesModal from './EditProjectDatesModal';
 import CambiarEstadoAprobadoModal from './CambiarEstadoAprobadoModal';
 import ConfirmationModal from '../../../../components/common/ConfirmationModal';
+import LineaTiempoDocumentosModal from './lineaTiempo/LineaTiempoDocumentosModal';
 
 const ESTADO_SEVERITY = { APROBADO: 'success', NO_APROBADO: 'danger', SIN_CALIFICAR: 'warning' };
 
@@ -19,6 +20,7 @@ const ProyectoInfo = ({ proyecto }) => {
   const [isEditDatesModalVisible, setIsEditDatesModalVisible] = useState(false);
   const [isEstadoModalVisible, setIsEstadoModalVisible] = useState(false);
   const [isConfirmActaCierreVisible, setIsConfirmActaCierreVisible] = useState(false);
+  const [isLineaTiempoVisible, setIsLineaTiempoVisible] = useState(false);
 
   if (!proyecto) {
     return null;
@@ -59,6 +61,14 @@ const ProyectoInfo = ({ proyecto }) => {
             )}
           </div>
           <div className="row justify-content-center g-2">
+            <div className="col-auto">
+              <Button
+                label="Línea de Tiempo de Documentos"
+                icon="pi pi-history"
+                className="p-button-help"
+                onClick={() => setIsLineaTiempoVisible(true)}
+              />
+            </div>
             {hasAnyRole(['CINTERNO', 'CEXTERNO']) && (
               <div className="col-auto">
                 <Button
@@ -94,6 +104,12 @@ const ProyectoInfo = ({ proyecto }) => {
         </div>
       </Card>
       <EditProjectDatesModal visible={isEditDatesModalVisible} onHide={() => setIsEditDatesModalVisible(false)} proyecto={proyecto} />
+      <LineaTiempoDocumentosModal
+        visible={isLineaTiempoVisible}
+        onHide={() => setIsLineaTiempoVisible(false)}
+        proyectoId={proyecto.id}
+        tituloProyecto={proyecto.titulo}
+      />
       <CambiarEstadoAprobadoModal visible={isEstadoModalVisible} onHide={() => setIsEstadoModalVisible(false)} proyecto={proyecto} />
       <ConfirmationModal
         visible={isConfirmActaCierreVisible}
