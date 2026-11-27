@@ -13,7 +13,7 @@ const COLUMNAS = [
   {
     titulo: 'Contacto',
     items: [
-      'soporterosillo@esmic.edu.co',
+      'soporte.rosillo@esmic.edu.co',
       'FAX: 601 5453486',
       'Departamento I+D+i',
     ],

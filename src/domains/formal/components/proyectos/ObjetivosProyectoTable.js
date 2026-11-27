@@ -1,14 +1,17 @@
 // src/domains/formal/components/proyectos/ObjetivosProyectoTable.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import { Menu } from 'primereact/menu';
 import AddAvanceModal from './AddAvanceModal';
 import AddObjetivoModal from './AddObjetivoModal';
 import EditObjetivoModal from './EditObjetivoModal';
+import EnlaceCargaTemporalModal from './enlaceCarga/EnlaceCargaTemporalModal';
+import axiosInstance from '../../../../api/axiosInstance';
 import ConfirmationModal from '../../../../components/common/ConfirmationModal';
 import {
   fetchObjetivosPorProyecto,
@@ -29,6 +32,37 @@ const ObjetivosProyectoTable = ({ proyectoId, readOnly = false }) => {
   const [isAddObjetivoModalVisible, setIsAddObjetivoModalVisible] = useState(false);
   const [objetivoAEditar, setObjetivoAEditar] = useState(null);
   const [objetivoAEliminar, setObjetivoAEliminar] = useState(null);
+  // Opción secundaria (y discreta) solo para el coordinador FACULTAD: enlace
+  // temporal para que un investigador sin cuenta reporte el avance mensual.
+  // Lo que envíe queda como borrador hasta que el coordinador lo apruebe.
+  const esCoordinadorFacultad = (roles || []).includes('FACULTAD');
+  const menuOpcionesRef = useRef(null);
+  const [modalEnlaceVisible, setModalEnlaceVisible] = useState(false);
+  const [borradoresPendientes, setBorradoresPendientes] = useState(0);
+
+  const contarBorradoresPendientes = useCallback(async () => {
+    if (!esCoordinadorFacultad || !proyectoId) return;
+    try {
+      const { data } = await axiosInstance.get('investigacion-formal/enlaces-carga/', {
+        params: { proyecto: proyectoId, estado: 'PENDIENTE_REVISION' },
+        suppressErrorRedirect: true,
+      });
+      setBorradoresPendientes((data || []).length);
+    } catch {
+      setBorradoresPendientes(0);
+    }
+  }, [esCoordinadorFacultad, proyectoId]);
+
+  useEffect(() => {
+    contarBorradoresPendientes();
+  }, [contarBorradoresPendientes]);
+
+  const handleCambioEnlaces = () => {
+    contarBorradoresPendientes();
+    // Un reporte aprobado ya es avance registrado del proyecto.
+    dispatch(fetchObjetivosPorProyecto(proyectoId));
+    dispatch(fetchObjetivoXPuntoPorProyecto(proyectoId));
+  };
 
   const avancePonderadoTemplate = (rowData) => {
     const peso = rowData.punto_control_peso || 0;
@@ -120,7 +154,31 @@ const ObjetivosProyectoTable = ({ proyectoId, readOnly = false }) => {
         </DataTable>
       </Card>
 
+      {esCoordinadorFacultad && borradoresPendientes > 0 && (
+        <div className="alert alert-warning d-flex justify-content-between align-items-center">
+          <span>
+            Tiene <strong>{borradoresPendientes}</strong> reporte{borradoresPendientes > 1 ? 's' : ''} de avance
+            recibido{borradoresPendientes > 1 ? 's' : ''} por enlace temporal pendiente{borradoresPendientes > 1 ? 's' : ''} de su revisión.
+          </span>
+          <Button label="Revisar" icon="pi pi-eye" className="p-button-sm p-button-warning" onClick={() => setModalEnlaceVisible(true)} />
+        </div>
+      )}
       <div className="d-flex justify-content-end mb-3 gap-2">
+        {esCoordinadorFacultad && (
+          <>
+            <Menu
+              model={[{ label: 'Enlace temporal para reportar avance', icon: 'pi pi-link', command: () => setModalEnlaceVisible(true) }]}
+              popup
+              ref={menuOpcionesRef}
+            />
+            <Button
+              icon="pi pi-ellipsis-v"
+              className="p-button-text p-button-secondary p-button-sm"
+              aria-label="Más opciones"
+              onClick={(e) => menuOpcionesRef.current.toggle(e)}
+            />
+          </>
+        )}
         {puedeGestionar && (
           <Button label="Agregar Objetivo" icon="pi pi-plus" onClick={() => setIsAddObjetivoModalVisible(true)} />
         )}
@@ -158,6 +216,14 @@ const ObjetivosProyectoTable = ({ proyectoId, readOnly = false }) => {
         onHide={() => setIsAddAvanceModalVisible(false)}
         proyectoId={proyectoId}
       />
+      {esCoordinadorFacultad && (
+        <EnlaceCargaTemporalModal
+          visible={modalEnlaceVisible}
+          onHide={() => setModalEnlaceVisible(false)}
+          proyectoId={proyectoId}
+          onCambio={handleCambioEnlaces}
+        />
+      )}
       <EditObjetivoModal
         visible={Boolean(objetivoAEditar)}
         onHide={() => setObjetivoAEditar(null)}

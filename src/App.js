@@ -127,6 +127,7 @@ import ServerErrorPage from "./pages/errors/ServerErrorPage";
 
 
 import LandingPage from "./pages/LandingPage";
+import CargaTemporalPage from "./pages/CargaTemporalPage";
 
 // Componente de ejemplo para una página protegida
 const DashboardPage = () => (
@@ -140,7 +141,11 @@ const HIDE_NAVBAR_PATHS = ["/", "/login/formal", "/login/formativa"];
 function AppContent() {
   const location = useLocation();
   // En el LandingPage y los login no se muestran ni encabezado ni pie de página.
-  const hideNavbar = HIDE_NAVBAR_PATHS.includes(location.pathname);
+  // La página pública del enlace de carga temporal tampoco los muestra:
+  // quien llega por ese enlace no tiene sesión en la plataforma.
+  const hideNavbar =
+    HIDE_NAVBAR_PATHS.includes(location.pathname) ||
+    location.pathname.startsWith("/carga-temporal/");
 
   // Toast global: lo usa axiosInstance.js para mostrar el resultado de cada
   // creación, edición o eliminación en cualquier pantalla.
@@ -172,6 +177,7 @@ function AppContent() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/plantillas-documento" element={<PlantillasDocumentoPage />} />
+            <Route path="/carga-temporal/:token" element={<CargaTemporalPage />} />
             {/* Páginas de error: públicas a propósito. */}
             <Route path="/error" element={<ErrorPageLayout />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
